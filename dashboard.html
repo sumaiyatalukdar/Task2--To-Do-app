@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>UniBoard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --purple: #800080;
+      --light-purple: #a64ca6;
+      --white: #ffffff;
+      --background-gradient: linear-gradient(to right, #dfe9f3 0%, #ffffff 100%);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    body {
+      background: var(--background-gradient);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Navbar */
+    .navbar {
+      background-color: var(--purple);
+      color: var(--white);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 30px;
+    }
+
+    .navbar-left a {
+      margin-right: 20px;
+      color: var(--white);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    .navbar-left a:hover {
+      text-decoration: underline;
+    }
+
+    .logout-btn {
+      background-color: var(--white);
+      color: var(--purple);
+      padding: 8px 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .logout-btn:hover {
+      background-color: #eee;
+    }
+
+    /* Welcome Text Section */
+    .main-content {
+      flex-grow: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      text-align: center;
+      padding: 40px;
+    }
+
+    .main-content h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .main-content p {
+      font-size: 1.2rem;
+    }
+
+    .main-content p span {
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="navbar">
+    <div class="navbar-left">
+      <a href="todo.html">To Do List</a>
+      <a href="gallery.html">Image Gallery</a>
+    </div>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+
+  <div class="main-content">
+    <h1>Welcome to UniBoard 🎉</h1>
+    <p>You are logged in as <span id="username"></span></p>
+  </div>
+
+  <script>
+    function logout() {
+      localStorage.removeItem('user'); // or sessionStorage depending on your login logic
+      window.location.href = 'index.html'; // Redirect to login page
+    }
+
+    // Optional: Dynamically set username
+    const loggedInUser = localStorage.getItem("username"); // set this during login
+    if (loggedInUser) {
+      document.getElementById("username").innerText = loggedInUser;
+    }
+  </script>
+
+</body>
+</html>

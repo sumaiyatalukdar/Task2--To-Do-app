@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TO-DO TASklister</title>
+    <style>
+       *{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+       }
+       :root{
+        --background: purple;
+        --secondaryBackground: rgb(232, 179, 232);
+        --purple: plum;
+        --teal: #24feee;
+       }
+       body{
+        background-color: var(--background);
+        color: #fff
+       }
+       .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-top: 120px;
+        margin: 120px auto 0 auto;
+        max-width: 500px;
+       }
+       .stats-container {
+        padding: 30px;
+        border-radius: 20px;
+        border: 2px solid var(--purple);
+        display: flex;
+        justify-content: space-between;
+        gap: 50px;
+        width: 100%;
+       }
+       .details {
+        width: 100%;
+       }
+       #progressBar{
+        width: 100%;
+        height: 10px;
+        background-color: var(--secondaryBackground);
+        border-radius: 5px;
+        margin-top: 20px;
+       }
+       #progress{
+        height: 10px;
+        width: 0;
+        background-color: var(--teal);
+        border-radius: 10px;
+        transition: all 0.3s ease;
+       }
+       #numbers {
+        width: 100px;
+        height: 100px;
+        background-color: var(--purple);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        font-size: 30px;
+        font-weight: bold;
+       }
+       form{
+        margin-top: 60px;
+        width: 100%;
+        display: flex;
+        gap: 10px;
+       }
+       input{
+        flex: 1;
+        padding: 16px;
+        background: var(--secondaryBackground);
+        border: 1px solid var(--purple);
+        border-radius: 10px;
+        outline: none;
+        color: black;
+       }
+       button {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--purple);
+        color: #fff;
+        font-size: 30px;
+        font-weight: bold;
+        outline: none;
+       }
+       #task-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 30px;
+        width: 100%;
+        list-style: none;
+       }
+       .taskItem {
+        width: 100%;
+        display: flex;
+        background-color: var(--secondaryBackground);
+        padding: 5px;
+        border-radius: 10px;
+        justify-content: space-between;
+        align-items: center;
+        color: black
+       }
+       .task {
+        display: flex;
+        align-items: center; 
+        gap: 10px;
+    }
+    .task input{
+        width: 20px;
+        height: 20px;
+        
+    }
+    .completed p{
+        text-decoration: line-through;
+        color: var(--background);
+
+    }
+       .taskItem img{
+        width: 24px;
+        height: 24px;
+        margin: 0 10px;
+        cursor: pointer;
+       }
+       .back-btn {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        text-decoration: none;
+        font-size: 18px;
+        font-weight: bold;
+        color: #fff;
+        background-color: var(--purple);
+        padding: 10px 15px;
+        border-radius: 10px;
+        transition: background-color 0.3s ease;
+    }
+    .back-btn:hover {
+        background-color: var(--purple);
+        color: black;
+    }
+    
+    </style>
+</head>
+<body>
+    <a href="dashboard.html" class="back-btn">←</a>
+
+    <div class="container">
+        <div class="stats-container">
+            <div class="details">
+                <h1>To-Do List</h1>
+                <p>Keep it up!</p>
+                <div id="progressBar">
+                <div id="progress"></div>                      
+                </div>
+            </div>
+            <div class="stats-numbers">
+                <p id="numbers">0 / 0</p>
+            </div>
+        </div>
+
+        <form action="">
+            <input type="text" id="taskInput" placeholder="Write your task">
+            <button id="newTask" type="submit"> + </button>
+        </form>
+
+        <ul id="task-list"></ul>
+    </div>
+    <script>
+        
+        document.addEventListener("DOMContentLoaded", ()=> {
+            const storedTasks = JSON.parse(localStorage.getItem('tasks'));
+            if (storedTasks) {
+                storedTasks.forEach((task)=> tasks.push(task));
+                updateTasksList();
+                
+            }
+        });
+        let tasks = [];
+
+        const saveTasks = () =>{
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        }
+
+        const addTask = ()=> {
+            const taskInput = document.getElementById('taskInput');
+            const text = taskInput.value.trim();
+
+            if (text) {
+                tasks.push({text: text, completed: false});
+                taskInput.value = "";
+                updateTasksList();
+                saveTasks();
+            }  
+        };
+        const toggleTaskComplete = (index) => {
+            tasks[index].completed = !tasks[index].completed;
+            updateTasksList();
+            saveTasks();
+        }
+         // Function to delete a task
+         const deleteTask = (index) => {
+            tasks.splice(index, 1); 
+            updateTasksList(); 
+            saveTasks();
+        }
+        
+        // Function to edit a task
+        const editTask = (index) => {
+            const taskInput = document.getElementById('taskInput');
+            taskInput.value = tasks[index].text;
+
+            tasks.splice(index,1);
+                updateTasksList(); 
+                saveTasks();
+        };
+
+        const updateTasksList = () => {
+    const taskList = document.getElementById("task-list");
+    taskList.innerHTML = "";
+
+    tasks.forEach((task, index) => {
+        const listItem = document.createElement('li');
+
+        listItem.innerHTML = `
+            <div class="taskItem">
+                <div class="task ${task.completed ? 'completed' : ''}">
+                    <input type="checkbox" class="checkbox" ${task.completed ? 'checked' : ''} />
+                    <p>${task.text}</p>
+                </div>
+                <div class="icons">
+                    <img src="./img/edit.png" onClick="editTask(${index})" />
+                    <img src="./img/bin.png" onClick="deleteTask(${index})" />
+                </div>
+            </div>
+        `;
+
+        // Listen for checkbox toggle
+        listItem.querySelector('.checkbox').addEventListener('change', () => {
+            toggleTaskComplete(index);
+            updateTasksList(); // Re-render after toggle
+        });
+
+        taskList.appendChild(listItem);
+    });
+
+    // Update progress text
+    const completedTasks = tasks.filter(task => task.completed).length;
+    const totalTasks = tasks.length;
+
+    document.getElementById("numbers").innerText = `${completedTasks} / ${totalTasks}`;
+
+    const progressPercent = totalTasks === 0 ? 0 : (completedTasks / totalTasks) * 100;
+    document.getElementById("progress").style.width = `${progressPercent}%`;
+
+    // ✅ Show custom message & trigger confetti
+    const messageElement = document.querySelector('.details p');
+    if (totalTasks > 0 && completedTasks === totalTasks) {
+        messageElement.innerText = "🎉 All tasks completed!";
+        blaskConfetti(); // 🎊 trigger confetti
+    } else {
+        messageElement.innerText = "Keep it up!";
+    }
+};
+
+    
+document.getElementById('newTask').addEventListener('click', function(e){
+    e.preventDefault();
+    addTask();
+    });
+
+    const blaskConfetti = ()=>{
+        const count = 200,
+  defaults = {
+    origin: { y: 0.7 },
+  };
+
+function fire(particleRatio, opts) {
+  confetti(
+    Object.assign({}, defaults, opts, {
+      particleCount: Math.floor(count * particleRatio),
+    })
+  );
+}
+
+fire(0.25, {
+  spread: 26,
+  startVelocity: 55,
+});
+
+fire(0.2, {
+  spread: 60,
+});
+
+fire(0.35, {
+  spread: 100,
+  decay: 0.91,
+  scalar: 0.8,
+});
+
+fire(0.1, {
+  spread: 120,
+  startVelocity: 25,
+  decay: 0.92,
+  scalar: 1.2,
+});
+
+fire(0.1, {
+  spread: 120,
+  startVelocity: 45,
+});
+    }      
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@tsparticles/confetti@3.0.3/tsparticles.confetti.bundle.min.js"></script>
+</body>
+</html>
